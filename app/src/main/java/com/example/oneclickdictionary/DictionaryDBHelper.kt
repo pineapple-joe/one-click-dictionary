@@ -16,16 +16,14 @@ public class DictionaryDBHelper(private val context: Context) :
         private const val DATABASE_VERSION = 1
         private const val DATABASE_DATA_FILE = "english_dictionary.csv"
         private const val TABLE_DICTIONARY = "dictionary"
+        private const val TABLE_MY_WORDS = "words"
         private const val KEY_WORD = "word"
-        private const val KEY_POS = "pos"
-        private const val KEY_DEFINITION = "def"
+        private const val KEY_DEFINITION = "definition"
     }
 
     fun createDatabase() {
         val db = writableDatabase
         if (!tableExists(db, TABLE_DICTIONARY)){
-            db?.execSQL("DROP TABLE IF EXISTS " + TABLE_DICTIONARY)
-            onCreate(db)
             this.initDatabase(db)
         }
     }
@@ -62,7 +60,6 @@ public class DictionaryDBHelper(private val context: Context) :
                 }
                 val cv = ContentValues(3)
                 cv.put(KEY_WORD, columns[0].trim { it <= ' ' })
-                cv.put(KEY_POS, columns[1].trim { it <= ' ' })
                 cv.put(KEY_DEFINITION, columns[2].trim { it <= ' ' })
                 db.insert(TABLE_DICTIONARY, null, cv)
             }
@@ -80,11 +77,15 @@ public class DictionaryDBHelper(private val context: Context) :
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val createDictionaryTable = ((((("CREATE TABLE $TABLE_DICTIONARY").toString() + "("
+        val createDictionaryTable = (((("CREATE TABLE $TABLE_DICTIONARY").toString() + "("
                 + KEY_WORD) + " TEXT,"
-                + KEY_POS) + " TEXT,"
                 + KEY_DEFINITION) + " TEXT" + ")")
         db!!.execSQL(createDictionaryTable)
+
+        val createMyWordsTable = (((("CREATE TABLE $TABLE_MY_WORDS").toString() + "("
+                + KEY_WORD) + " TEXT,"
+                + KEY_DEFINITION) + " TEXT" + ")")
+        db.execSQL(createMyWordsTable)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -121,5 +122,19 @@ public class DictionaryDBHelper(private val context: Context) :
         }
         return wordDefinitions
 
+    }
+
+    fun addWord(word: String, definition:String) {
+        val db = this.writableDatabase
+        try {
+            val values = ContentValues()
+            values.put(KEY_WORD, word)
+            values.put(KEY_DEFINITION, definition)
+            db.insert(TABLE_MY_WORDS, null, values)
+        } catch (e: Exception){
+            println("An error occurred while adding word definition: ${e.message}")
+        } finally {
+            db.close()
+        }
     }
 }

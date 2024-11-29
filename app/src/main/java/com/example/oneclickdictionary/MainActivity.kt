@@ -2,6 +2,7 @@ package com.example.oneclickdictionary
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.ArrayAdapter
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
                     val word = inputBox.getText().toString()
                     val wordDefinitions = databaseHelper.getWord(word)
                     for (item in wordDefinitions) {
-                        resultList.add(item.definition)
+                        resultList.add(item.definition.removeSurrounding("\""))
                     }
                     handler.postDelayed({adapter.notifyDataSetChanged()}, 0)
                 }
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        handler = Handler()
+        handler = Handler(Looper.getMainLooper())
 
         databaseHelper = DictionaryDBHelper(this)
         databaseHelper.createDatabase()

@@ -127,12 +127,15 @@ public class DictionaryDBHelper(private val context: Context) :
     fun addWord(word: String, definitions: ArrayList<String>) {
         val db = this.writableDatabase
         try {
+            db.beginTransaction()
             val values = ContentValues()
             for (definition in definitions){
                 values.put(KEY_WORD, word)
                 values.put(KEY_DEFINITION, definition)
+                db.insert(TABLE_MY_WORDS, null, values)
             }
-            db.insert(TABLE_MY_WORDS, null, values)
+            db.setTransactionSuccessful()
+            db.endTransaction()
         } catch (e: Exception){
             println("An error occurred while adding word definition: ${e.message}")
         }

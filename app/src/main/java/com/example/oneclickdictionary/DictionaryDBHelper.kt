@@ -140,7 +140,7 @@ class DictionaryDBHelper(private val context: Context) :
         }
     }
 
-    fun getSavedWords(): Map<String, List<Word>> {
+    fun getSavedWords(): Map<String, List<String>> {
         val wordDefinitions = ArrayList<Word>()
         try {
             val db = this.readableDatabase
@@ -166,6 +166,6 @@ class DictionaryDBHelper(private val context: Context) :
         catch (e: Exception){
             println("An error occurred while getting word definition: ${e.message}")
         }
-        return wordDefinitions.groupBy { it.word }
+        return wordDefinitions.groupBy ({ it.word }, { it.definition })
     }
 }

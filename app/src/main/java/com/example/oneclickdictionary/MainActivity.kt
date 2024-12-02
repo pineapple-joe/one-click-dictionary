@@ -1,74 +1,36 @@
 package com.example.oneclickdictionary
 
+import ViewPagerAdapter
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.text.Editable
-import android.text.TextWatcher
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
-import java.util.Timer
-import java.util.TimerTask
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var databaseHelper: DictionaryDBHelper
-    private lateinit var inputBox: EditText
-    private lateinit var saveButton: Button
-    private lateinit var resultListView: ListView
-    private lateinit var adapter: ArrayAdapter<String>
-    private val resultList = ArrayList<String>()
-    private lateinit var handler: Handler
 
-    private var textWatcher: TextWatcher = object : TextWatcher {
-        var delay : Long = 1000
-        var timer = Timer()
-
-        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            timer.cancel()
-            timer.purge()
-            resultList.clear()
-        }
-
-        override fun afterTextChanged(s: Editable) {
-            timer = Timer()
-            timer.schedule(object : TimerTask() {
-                override fun run() {
-                    val word = inputBox.getText().toString()
-                    val wordDefinitions = databaseHelper.getWord(word)
-                    for (item in wordDefinitions) {
-                        resultList.add(item.definition.removeSurrounding("\""))
-                    }
-                    handler.postDelayed({adapter.notifyDataSetChanged()}, 0)
-                }
-            }, delay)
-        }
-    }
+    private lateinit var tabLayout: TabLayout
+    private lateinit var viewPager: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        handler = Handler(Looper.getMainLooper())
+        tabLayout=findViewById(R.id.tabLayout);
+        viewPager=findViewById(R.id.viewPager);
 
-        databaseHelper = DictionaryDBHelper(this)
-        databaseHelper.createDatabase()
+        val adapter = ViewPagerAdapter(this)
+        viewPager.adapter = adapter
 
-        inputBox = findViewById(R.id.inputBox)
-        inputBox.addTextChangedListener(textWatcher)
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = when (position) {
+                0 -> "Dictionary"
+                1 -> "Saved"
+                else -> null
+            }
+        }.attach()
 
-        resultListView = findViewById(R.id.resultListView)
-        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, resultList)
-        resultListView.adapter = adapter
 
-        saveButton = findViewById(R.id.searchButton)
-        saveButton.setOnClickListener {
-            databaseHelper.addWord(inputBox.getText().toString(), resultList)
-        }
     }
 }

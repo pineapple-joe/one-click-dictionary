@@ -8,7 +8,7 @@ import android.util.Log
 import java.io.IOException
 
 
-public class DictionaryDBHelper(private val context: Context) :
+class DictionaryDBHelper(private val context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
@@ -33,10 +33,9 @@ public class DictionaryDBHelper(private val context: Context) :
             return false
         }
         var count = 0
-        val args = arrayOf("table", table)
         val cursor = sqLiteDatabase.rawQuery(
-            "SELECT COUNT(*) FROM sqlite_master WHERE type=? AND name=?",
-            args,
+            "SELECT COUNT(*) FROM $table",
+            null,
             null
         )
         if (cursor.moveToFirst()) {
@@ -139,5 +138,34 @@ public class DictionaryDBHelper(private val context: Context) :
         } catch (e: Exception){
             println("An error occurred while adding word definition: ${e.message}")
         }
+    }
+
+    fun getSavedWords(): Map<String, List<Word>> {
+        val wordDefinitions = ArrayList<Word>()
+        try {
+            val db = this.readableDatabase
+
+            val cursor = db.query(
+                TABLE_MY_WORDS,
+                arrayOf(KEY_WORD, KEY_DEFINITION),
+                null,
+                null,
+                null, null, null, null
+            )
+
+            with(cursor) {
+                while (moveToNext()) {
+                    val definition = getString(cursor.getColumnIndexOrThrow(KEY_DEFINITION))
+                    val word = getString(cursor.getColumnIndexOrThrow(KEY_WORD))
+                    val savedWord = Word(word, definition)
+                    wordDefinitions.add(savedWord)
+                }
+            }
+            cursor.close()
+        }
+        catch (e: Exception){
+            println("An error occurred while getting word definition: ${e.message}")
+        }
+        return wordDefinitions.groupBy { it.word }
     }
 }

@@ -47,11 +47,9 @@ class SavedTranslationsAdapter(
     }
 
     override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup?): View {
-        val word = getGroup(groupPosition)
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = inflater.inflate(android.R.layout.simple_expandable_list_item_1, null)
-        val textView = view.findViewById<TextView>(android.R.id.text1)
-        textView.text = word
+        val view = LayoutInflater.from(context).inflate(R.layout.custom_group_item, parent, false)
+        val textView = view.findViewById<TextView>(R.id.groupTextView)
+        textView.text = getGroup(groupPosition).replaceFirstChar { it.uppercase() }
         return view
     }
 

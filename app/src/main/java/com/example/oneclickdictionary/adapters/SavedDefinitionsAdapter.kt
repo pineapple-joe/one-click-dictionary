@@ -1,4 +1,4 @@
-package com.example.oneclickdictionary
+package com.example.oneclickdictionary.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.oneclickdictionary.R
 
 class SavedTranslationsAdapter(
     private val context: Context,
-    private val words: List<String>,
-    private val definitions: MutableMap<String, MutableList<String>>
+    private var words: List<String>,
+    private var definitions: MutableMap<String, MutableList<String>>
 ) : BaseExpandableListAdapter() {
 
     override fun getChild(groupPosition: Int, childPosition: Int): String {
@@ -20,6 +21,12 @@ class SavedTranslationsAdapter(
 
     override fun getChildId(groupPosition: Int, childPosition: Int): Long {
         return childPosition.toLong()
+    }
+
+    fun updateData(newWord: List<String>, newDefinitions: MutableMap<String, MutableList<String>>) {
+        words += newWord
+        definitions += newDefinitions
+        notifyDataSetChanged()
     }
 
     override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup?): View {

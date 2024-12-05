@@ -1,8 +1,8 @@
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.oneclickdictionary.DictionaryFragment
-import com.example.oneclickdictionary.SavedDefinitionsFragment
+import com.example.oneclickdictionary.fragments.DictionaryFragment
+import com.example.oneclickdictionary.fragments.SavedDefinitionsFragment
 
 
 class ViewPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {

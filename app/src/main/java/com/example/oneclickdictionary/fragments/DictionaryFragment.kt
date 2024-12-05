@@ -1,4 +1,5 @@
-package com.example.oneclickdictionary
+package com.example.oneclickdictionary.fragments
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
@@ -12,15 +13,22 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.oneclickdictionary.DictionaryDBHelper
+import com.example.oneclickdictionary.R
+import com.example.oneclickdictionary.SavedWordsViewModel
+import com.example.oneclickdictionary.WordSavedListener
 import java.util.Timer
 import java.util.TimerTask
 
-class DictionaryFragment : Fragment(R.layout.dictionary_fragment) {
+class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedListener {
     private lateinit var databaseHelper: DictionaryDBHelper
+    private lateinit var viewModel: SavedWordsViewModel
     private lateinit var inputBox: EditText
     private lateinit var saveButton: Button
     private lateinit var resultListView: ListView
@@ -53,6 +61,11 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment) {
                 }
             }, delay)
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        viewModel = ViewModelProvider(requireActivity())[SavedWordsViewModel::class.java]
     }
 
     private fun showSaveNotification(word: String) {
@@ -95,9 +108,14 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment) {
         saveButton.setOnClickListener {
             val word = inputBox.getText().toString()
             databaseHelper.addWord(word, resultList)
-            showSaveNotification(word)
+            onWordSaved(word, resultList)
         }
 
         return root
+    }
+
+    override fun onWordSaved(word: String, definitions: MutableList<String>) {
+        viewModel.addWord(word, definitions)
+        Toast.makeText(context, "Word saved", Toast.LENGTH_SHORT).show()
     }
 }

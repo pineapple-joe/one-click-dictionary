@@ -1,4 +1,4 @@
-package com.example.oneclickdictionary
+package com.example.oneclickdictionary.utilities
 
 import android.content.Context
 import java.io.BufferedReader

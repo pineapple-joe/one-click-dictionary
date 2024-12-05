@@ -141,6 +141,12 @@ class DictionaryDBHelper(private val context: Context) :
         }
     }
 
+    fun removeWord(word: String) {
+        val db = this.writableDatabase
+        db.delete(TABLE_MY_WORDS, "$KEY_WORD = ?", arrayOf(word))
+        db.close()
+    }
+
     fun getSavedWords(): MutableMap<String, MutableList<String>> {
         val wordDefinitions = ArrayList<Word>()
         try {

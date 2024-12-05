@@ -14,7 +14,6 @@ import com.example.oneclickdictionary.adapters.SavedTranslationsAdapter
 
 class SavedDefinitionsFragment : Fragment(R.layout.saved_definitions) {
     private lateinit var databaseHelper: DictionaryDBHelper
-    private lateinit var resultList: MutableMap<String, MutableList<String>>
     private lateinit var expandableListView: ExpandableListView
     private lateinit var viewModel: SavedWordsViewModel
     private lateinit var adapter: SavedTranslationsAdapter
@@ -35,9 +34,10 @@ class SavedDefinitionsFragment : Fragment(R.layout.saved_definitions) {
 
         val context = requireContext()
         databaseHelper = DictionaryDBHelper(context)
-        resultList = databaseHelper.getSavedWords()
 
-        adapter = SavedTranslationsAdapter(requireContext(), resultList.map { it.key }, resultList)
+        adapter = SavedTranslationsAdapter(requireContext(), emptyList(), mutableMapOf(), { word ->
+            viewModel.removeWord(word)
+        })
         expandableListView.setAdapter(adapter)
 
         viewModel.savedWords.observe(viewLifecycleOwner) { savedWords ->

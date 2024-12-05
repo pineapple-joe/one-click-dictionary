@@ -12,7 +12,8 @@ import com.example.oneclickdictionary.R
 class SavedTranslationsAdapter(
     private val context: Context,
     private var words: List<String>,
-    private var definitions: MutableMap<String, MutableList<String>>
+    private var definitions: MutableMap<String, MutableList<String>>,
+    private val onWordRemoved: (String) -> Unit
 ) : BaseExpandableListAdapter() {
 
     override fun getChild(groupPosition: Int, childPosition: Int): String {
@@ -24,8 +25,8 @@ class SavedTranslationsAdapter(
     }
 
     fun updateData(newWord: List<String>, newDefinitions: MutableMap<String, MutableList<String>>) {
-        words += newWord
-        definitions += newDefinitions
+        words = newWord
+        definitions = newDefinitions
         notifyDataSetChanged()
     }
 
@@ -54,22 +55,18 @@ class SavedTranslationsAdapter(
         return groupPosition.toLong()
     }
 
-    private fun removeWord(word: String) {
-        definitions.remove(word)
-        notifyDataSetChanged()
-    }
-
     override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup?): View {
         val view = LayoutInflater.from(context).inflate(R.layout.custom_group_item, parent, false)
         val textView = view.findViewById<TextView>(R.id.groupTextView)
         val removeIcon = view.findViewById<ImageView>(R.id.removeIcon)
 
+        val word = getGroup(groupPosition)
+
         removeIcon.setOnClickListener {
-            val word = getGroup(groupPosition)
-            removeWord(word)
+            onWordRemoved(word)
         }
 
-        textView.text = getGroup(groupPosition).replaceFirstChar { it.uppercase() }
+        textView.text = word.replaceFirstChar { it.uppercase() }
         return view
     }
 

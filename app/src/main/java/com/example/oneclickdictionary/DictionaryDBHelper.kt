@@ -88,8 +88,8 @@ class DictionaryDBHelper(private val context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db?.execSQL("DROP TABLE IF EXISTS " + TABLE_DICTIONARY);
-        onCreate(db);
+        db?.execSQL("DROP TABLE IF EXISTS " + TABLE_DICTIONARY)
+        onCreate(db)
     }
 
     fun getWord(wordToFind: String): MutableList<Word> {
@@ -140,7 +140,7 @@ class DictionaryDBHelper(private val context: Context) :
         }
     }
 
-    fun getSavedWords(): Map<String, List<String>> {
+    fun getSavedWords(): MutableMap<String, MutableList<String>> {
         val wordDefinitions = ArrayList<Word>()
         try {
             val db = this.readableDatabase
@@ -166,6 +166,6 @@ class DictionaryDBHelper(private val context: Context) :
         catch (e: Exception){
             println("An error occurred while getting word definition: ${e.message}")
         }
-        return wordDefinitions.groupBy ({ it.word }, { it.definition })
+        return wordDefinitions.groupByTo(mutableMapOf(), { it.word }, { it.definition })
     }
 }

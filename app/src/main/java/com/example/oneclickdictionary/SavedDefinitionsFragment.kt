@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 
 class SavedDefinitionsFragment : Fragment(R.layout.saved_definitions) {
     private lateinit var databaseHelper: DictionaryDBHelper
-    private lateinit var resultList: Map<String, List<String>>
+    private lateinit var resultList: MutableMap<String, MutableList<String>>
     private lateinit var expandableListView: ExpandableListView
     private lateinit var adapter: SavedTranslationsAdapter
 

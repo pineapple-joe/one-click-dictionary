@@ -5,35 +5,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:orientation="horizontal"
-        android:layout_height="50dp"
-        android:layout_width="match_parent">
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/outlined_text_input_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="Enter word"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputBox"
-            android:layout_width="313dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="22dp"
-            android:autofillHints=""
-            android:gravity="left"
-            android:hint="Enter word to translate"
-            android:inputType="text" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/searchButton"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:insetLeft="0dp"
-            android:insetTop="0dp"
-            android:insetRight="0dp"
-            android:insetBottom="0dp"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
-            app:icon="@drawable/baseline_bookmark_24" />
-
-    </LinearLayout>
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <ListView
         android:id="@+id/resultListView"
@@ -48,8 +39,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/outlined_text_input_layout"
         app:layout_constraintVertical_bias="0.15" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/searchButton"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        android:visibility="gone"
+        app:icon="@drawable/baseline_bookmark_24" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

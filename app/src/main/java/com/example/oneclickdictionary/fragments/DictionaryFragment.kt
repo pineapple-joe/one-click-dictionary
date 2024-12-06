@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ListView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -23,13 +22,15 @@ import com.example.oneclickdictionary.DictionaryDBHelper
 import com.example.oneclickdictionary.R
 import com.example.oneclickdictionary.SavedWordsViewModel
 import com.example.oneclickdictionary.WordSavedListener
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import java.util.Timer
 import java.util.TimerTask
 
 class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedListener {
     private lateinit var databaseHelper: DictionaryDBHelper
     private lateinit var viewModel: SavedWordsViewModel
-    private lateinit var inputBox: EditText
+    private lateinit var inputBox: TextInputEditText
     private lateinit var saveButton: Button
     private lateinit var resultListView: ListView
     private lateinit var adapter: ArrayAdapter<String>
@@ -57,7 +58,10 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedList
                     for (item in wordDefinitions) {
                         resultList.add(item.definition.removeSurrounding("\""))
                     }
-                    handler.postDelayed({adapter.notifyDataSetChanged()}, 0)
+                    handler.postDelayed({
+                        adapter.notifyDataSetChanged()
+                        saveButton.visibility = if (s.isEmpty()) View.GONE else View.VISIBLE
+                    }, 0)
                 }
             }, delay)
         }
@@ -98,7 +102,10 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedList
         handler = Handler(Looper.getMainLooper())
 
         inputBox = root.findViewById(R.id.inputBox)
+        val inputBoxLayout : TextInputLayout = root.findViewById(R.id.outlined_text_input_layout)
         inputBox.addTextChangedListener(textWatcher)
+        inputBox.requestFocus()
+        inputBoxLayout.requestFocus()
 
         resultListView = root.findViewById(R.id.resultListView)
         adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, resultList)

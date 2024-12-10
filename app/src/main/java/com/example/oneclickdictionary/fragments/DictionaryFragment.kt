@@ -53,15 +53,26 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedList
             timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {
-                    val word = inputBox.getText().toString()
-                    val wordDefinitions = databaseHelper.getWord(word)
-                    for (item in wordDefinitions) {
-                        resultList.add(item.definition.removeSurrounding("\""))
+                    val word = inputBox.getText().toString().trim()
+                    if(word != ""){
+                        val wordDefinitions = databaseHelper.getWord(word)
+                        var foundDefinition = true
+                        if (wordDefinitions.isEmpty()){
+                            resultList.add("There were no definitions found")
+                            foundDefinition = false
+                        }
+                        else {
+                            for (item in wordDefinitions) {
+                                resultList.add(item.definition.removeSurrounding("\""))
+                            }
+                        }
+                        handler.postDelayed({
+                            adapter.notifyDataSetChanged()
+                            if (foundDefinition) {
+                                saveButton.visibility = if (s.isEmpty()) View.GONE else View.VISIBLE
+                            }
+                        }, 0)
                     }
-                    handler.postDelayed({
-                        adapter.notifyDataSetChanged()
-                        saveButton.visibility = if (s.isEmpty()) View.GONE else View.VISIBLE
-                    }, 0)
                 }
             }, delay)
         }
@@ -116,6 +127,10 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedList
             val word = inputBox.getText().toString()
             databaseHelper.addWord(word, resultList)
             onWordSaved(word, resultList)
+
+            inputBox.getText()?.clear()
+            resultList.clear()
+            adapter.notifyDataSetChanged()
         }
 
         return root

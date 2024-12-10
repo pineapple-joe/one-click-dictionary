@@ -126,7 +126,8 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedList
         saveButton.setOnClickListener {
             val word = inputBox.getText().toString()
             databaseHelper.addWord(word, resultList)
-            onWordSaved(word, resultList)
+            val definitions = resultList.toMutableList()
+            onWordSaved(word, definitions)
 
             inputBox.getText()?.clear()
             resultList.clear()

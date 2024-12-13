@@ -175,4 +175,30 @@ class DictionaryDBHelper(private val context: Context) :
         }
         return wordDefinitions.groupByTo(mutableMapOf(), { it.word }, { it.definition })
     }
+
+    fun getRandomWord(): Word {
+        val db = this.readableDatabase
+        val cursor = db.query(
+            TABLE_DICTIONARY,
+            arrayOf(KEY_WORD, KEY_DEFINITION),
+            null,
+            null,
+            null,
+            null,
+            "RANDOM()",    // orderBy
+            "1"            // limit
+        )
+
+        var randomWord = Word()
+        if (cursor.moveToFirst()) {
+            val word = cursor.getString(cursor.getColumnIndexOrThrow(KEY_WORD))
+            val definition = cursor.getString(cursor.getColumnIndexOrThrow(KEY_DEFINITION))
+            randomWord.word = word
+            randomWord.definition = definition
+        }
+
+        cursor.close()
+        db.close()
+        return randomWord
+    }
 }

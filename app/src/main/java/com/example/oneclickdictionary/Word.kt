@@ -1,3 +1,3 @@
 package com.example.oneclickdictionary
 
-data class Word(val word: String,val definition: String)
+data class Word(var word: String = "", var definition: String = "")

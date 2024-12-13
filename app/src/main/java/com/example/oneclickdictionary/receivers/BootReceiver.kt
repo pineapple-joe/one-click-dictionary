@@ -1,4 +1,4 @@
-package com.example.oneclickdictionary
+package com.example.oneclickdictionary.receivers
 
 import android.content.BroadcastReceiver
 import android.content.Context

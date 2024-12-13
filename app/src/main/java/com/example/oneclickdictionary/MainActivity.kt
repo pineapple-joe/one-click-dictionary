@@ -2,15 +2,13 @@ package com.example.oneclickdictionary
 
 import ViewPagerAdapter
 import android.app.AlarmManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
+import com.example.oneclickdictionary.receivers.AlarmReceiver
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import java.util.Calendar
@@ -26,7 +24,6 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, AlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
-        // Set the alarm to start at approximately 2:00 p.m.
         val calendar = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
             set(Calendar.HOUR_OF_DAY, 14)
@@ -39,7 +36,14 @@ class MainActivity : AppCompatActivity() {
             AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
-
+// For debugging
+//        val intervalMillis = 60 * 1000L // 1 minute in milliseconds
+//        alarmManager.setRepeating(
+//            AlarmManager.RTC_WAKEUP,
+//            System.currentTimeMillis(),
+//            intervalMillis,
+//            pendingIntent
+//        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

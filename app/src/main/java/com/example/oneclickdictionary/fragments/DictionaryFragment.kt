@@ -13,6 +13,8 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -31,11 +33,23 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedList
     private lateinit var databaseHelper: DictionaryDBHelper
     private lateinit var viewModel: SavedWordsViewModel
     private lateinit var inputBox: TextInputEditText
+    private lateinit var inputBoxLayout: TextInputLayout
+    private lateinit var constraintLayout: ConstraintLayout
     private lateinit var saveButton: Button
     private lateinit var resultListView: ListView
     private lateinit var adapter: ArrayAdapter<String>
     private lateinit var handler: Handler
     private val resultList = ArrayList<String>()
+
+    private fun moveEditTextToTop(constraintLayout: ConstraintLayout, editText: TextInputLayout) {
+        requireActivity().runOnUiThread {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(constraintLayout)
+
+            constraintSet.clear(editText.id, ConstraintSet.BOTTOM)
+            constraintSet.applyTo(constraintLayout)
+        }
+    }
 
     private var textWatcher: TextWatcher = object : TextWatcher {
         var delay : Long = 1000
@@ -65,6 +79,7 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedList
                             for (item in wordDefinitions) {
                                 resultList.add(item.definition.removeSurrounding("\""))
                             }
+                            moveEditTextToTop(constraintLayout, inputBoxLayout)
                         }
                         handler.postDelayed({
                             adapter.notifyDataSetChanged()
@@ -83,27 +98,6 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedList
         viewModel = ViewModelProvider(requireActivity())[SavedWordsViewModel::class.java]
     }
 
-    private fun showSaveNotification(word: String) {
-        val channelId = "save_word_channel"
-        val context = requireContext()
-        val builder = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_launcher_foreground) // Replace with your app's small icon
-            .setContentTitle("Word Saved")
-            .setContentText("The word '$word' has been saved successfully.")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-        with(NotificationManagerCompat.from(context)) {
-            if (ActivityCompat.checkSelfPermission(
-                    context,
-                    android.Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1)
-                return@with
-            }
-            notify(System.currentTimeMillis().toInt(), builder.build())
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val root = inflater.inflate(R.layout.dictionary_fragment, null)
         val context = requireContext()
@@ -113,10 +107,13 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedList
         handler = Handler(Looper.getMainLooper())
 
         inputBox = root.findViewById(R.id.inputBox)
+        inputBoxLayout = root.findViewById(R.id.outlined_text_input_layout)
         val inputBoxLayout : TextInputLayout = root.findViewById(R.id.outlined_text_input_layout)
         inputBox.addTextChangedListener(textWatcher)
         inputBox.requestFocus()
         inputBoxLayout.requestFocus()
+
+        constraintLayout = root.findViewById(R.id.constraint_layout)
 
         resultListView = root.findViewById(R.id.resultListView)
         adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, resultList)

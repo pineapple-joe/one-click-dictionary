@@ -82,6 +82,8 @@ class DictionaryDBHelper(private val context: Context) :
                 + KEY_DEFINITION) + " TEXT" + ")")
         db!!.execSQL(createDictionaryTable)
 
+        db.execSQL(("CREATE INDEX word_index ON $TABLE_DICTIONARY($KEY_WORD)"))
+
         val createMyWordsTable = (((("CREATE TABLE $TABLE_MY_WORDS").toString() + "("
                 + KEY_WORD) + " TEXT,"
                 + KEY_DEFINITION) + " TEXT" + ")")

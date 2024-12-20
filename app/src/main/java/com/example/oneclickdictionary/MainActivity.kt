@@ -30,10 +30,9 @@ class MainActivity : AppCompatActivity() {
             set(Calendar.MINUTE, 0)
         }
 
-        alarmManager.setRepeating(
+        alarmManager.setAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
 // For debugging

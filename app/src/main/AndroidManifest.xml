@@ -24,7 +24,7 @@
         </receiver>
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="stateVisible|adjustPan"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

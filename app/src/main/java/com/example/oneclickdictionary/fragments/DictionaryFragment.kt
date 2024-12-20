@@ -1,4 +1,5 @@
 package com.example.oneclickdictionary.fragments
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -9,12 +10,14 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.oneclickdictionary.DictionaryDBHelper

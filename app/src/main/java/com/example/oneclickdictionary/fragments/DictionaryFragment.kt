@@ -15,9 +15,6 @@ import android.widget.ListView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.oneclickdictionary.DictionaryDBHelper
@@ -36,6 +33,7 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedList
     private lateinit var inputBoxLayout: TextInputLayout
     private lateinit var constraintLayout: ConstraintLayout
     private lateinit var saveButton: Button
+    private lateinit var clearButton: Button
     private lateinit var resultListView: ListView
     private lateinit var adapter: ArrayAdapter<String>
     private lateinit var handler: Handler
@@ -58,6 +56,8 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedList
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            clearButton.visibility = if (s.isEmpty()) View.GONE else View.VISIBLE
+            saveButton.visibility = if (s.isEmpty()) View.GONE else View.VISIBLE
             timer.cancel()
             timer.purge()
             resultList.clear()
@@ -108,8 +108,8 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedList
 
         inputBox = root.findViewById(R.id.inputBox)
         inputBoxLayout = root.findViewById(R.id.outlined_text_input_layout)
-        val inputBoxLayout : TextInputLayout = root.findViewById(R.id.outlined_text_input_layout)
         inputBox.addTextChangedListener(textWatcher)
+
         inputBox.requestFocus()
         inputBoxLayout.requestFocus()
 
@@ -126,6 +126,13 @@ class DictionaryFragment : Fragment(R.layout.dictionary_fragment), WordSavedList
             val definitions = resultList.toMutableList()
             onWordSaved(word, definitions)
 
+            inputBox.getText()?.clear()
+            resultList.clear()
+            adapter.notifyDataSetChanged()
+        }
+
+        clearButton = root.findViewById(R.id.clearButton)
+        clearButton.setOnClickListener {
             inputBox.getText()?.clear()
             resultList.clear()
             adapter.notifyDataSetChanged()

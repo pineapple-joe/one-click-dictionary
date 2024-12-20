@@ -57,9 +57,28 @@
         android:insetRight="0dp"
         android:insetBottom="0dp"
         app:iconGravity="textStart"
+        app:iconSize="25dp"
         app:iconPadding="0dp"
         android:visibility="gone"
-        app:icon="@drawable/baseline_bookmark_24" />
+        app:icon="@drawable/baseline_bookmark_24"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/clearButton"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/searchButton"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:iconSize="27dp"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        android:visibility="gone"
+        app:icon="@drawable/baseline_cancel_24"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
